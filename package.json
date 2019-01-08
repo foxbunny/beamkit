@@ -1,0 +1,44 @@
+{
+  "name": "beamkit",
+  "version": "0.0.0",
+  "description": "A simple toolkit for developing front end applications the old-school way",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "ava",
+    "test:live": "ava --watch --verbose",
+    "dist": "babel --output-dir dist src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foxbunny/beamkit.git"
+  },
+  "keywords": [
+    "JavaScript",
+    "front",
+    "end",
+    "toolkit"
+  ],
+  "author": "Hajime Yamasaki Vukelic <hayavuk@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/foxbunny/beamkit/issues"
+  },
+  "homepage": "https://github.com/foxbunny/beamkit#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-transform-react-jsx": "^7.2.0",
+    "@babel/plugin-transform-strict-mode": "^7.2.0",
+    "@babel/register": "^7.0.0",
+    "ava": "^1.0.1",
+    "browser-env": "^3.2.5",
+    "html": "^1.0.0",
+    "sinon": "^7.2.2"
+  },
+  "ava": {
+    "require": [
+      "@babel/register",
+      "./src/_test_setup"
+    ]
+  }
+}
