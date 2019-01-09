@@ -8,7 +8,10 @@
   "scripts": {
     "test": "ava",
     "test:live": "ava --watch --verbose",
-    "dist": "rollup -c"
+    "dist": "rollup -c",
+    "preversion": "npm test",
+    "version": "npm run dist && git add dist",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
