@@ -2,11 +2,13 @@
   "name": "beamkit",
   "version": "0.0.0",
   "description": "A simple toolkit for developing front end applications the old-school way",
-  "main": "dist/index.js",
+  "main": "src/index.js",
+  "module": "dist/beamkit.esm.js",
+  "browser": "dist/beamkit.umd.js",
   "scripts": {
     "test": "ava",
     "test:live": "ava --watch --verbose",
-    "dist": "babel --output-dir dist src"
+    "dist": "rollup -c"
   },
   "repository": {
     "type": "git",
@@ -33,6 +35,10 @@
     "ava": "^1.0.1",
     "browser-env": "^3.2.5",
     "html": "^1.0.0",
+    "rollup": "^1.0.2",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^4.0.0",
+    "rollup-plugin-terser": "^4.0.2",
     "sinon": "^7.2.2"
   },
   "ava": {
