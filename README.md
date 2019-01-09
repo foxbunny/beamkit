@@ -2,6 +2,8 @@
 
 A simple toolkit for developing front end applications the old-school way.
 
+[![Build Status](https://travis-ci.org/foxbunny/beamkit.svg?branch=master)](https://travis-ci.org/foxbunny/beamkit)
+
 ## Features
 
 - Compatible with Babel's `@babel/plugin-transform-react-jsx` plugin.
