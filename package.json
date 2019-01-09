@@ -1,6 +1,6 @@
 {
   "name": "beamkit",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A simple toolkit for developing front end applications the old-school way",
   "main": "src/index.js",
   "module": "dist/beamkit.esm.js",
