@@ -17,8 +17,8 @@ A simple toolkit for developing front end applications the old-school way.
 
 ## Documentation
 
-- [Creating DOM nodes using JSX]('./docs/h.md')
-- [Custom events]('./docs/hub.md)
+- [Creating DOM nodes using JSX](./docs/h.md)
+- [Custom events](./docs/hub.md)
 
 ## Installation
 
