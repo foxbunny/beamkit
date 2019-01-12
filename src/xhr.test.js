@@ -196,7 +196,7 @@ describe('xhr', () => {
   );
 
   test.each([301, 302, 304])(
-    'other fallback on error with code %',
+    'other fallback on error with code %s',
     async statusCode => {
       const response = {
         status: statusCode,
