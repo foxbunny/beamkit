@@ -21,11 +21,12 @@ A simple toolkit for developing front end applications the old-school way.
 
 - [Creating DOM nodes using JSX](./docs/h.md)
 - [Custom events](./docs/hub.md)
+- [Making XHR requests](./docs/xhr.md)
 
 ## Installation
 
 For now, install directly from GitHub repository:
 
-```javascript
+```
 npm i https://github.com/foxbunny/beamkit/
 ```
