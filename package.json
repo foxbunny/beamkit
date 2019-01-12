@@ -6,8 +6,8 @@
   "module": "dist/beamkit.esm.js",
   "browser": "dist/beamkit.umd.js",
   "scripts": {
-    "test": "ava",
-    "test:live": "ava --watch --verbose",
+    "test": "jest",
+    "test:live": "jest --watch",
     "dist": "rollup -c",
     "preversion": "npm test",
     "version": "npm run dist && git add dist",
@@ -35,19 +35,15 @@
     "@babel/plugin-transform-react-jsx": "^7.2.0",
     "@babel/plugin-transform-strict-mode": "^7.2.0",
     "@babel/register": "^7.0.0",
-    "ava": "^1.0.1",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
     "browser-env": "^3.2.5",
     "html": "^1.0.0",
+    "jest": "^23.6.0",
     "rollup": "^1.0.2",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-terser": "^4.0.2",
     "sinon": "^7.2.2"
-  },
-  "ava": {
-    "require": [
-      "@babel/register",
-      "./src/_test_setup"
-    ]
   }
 }

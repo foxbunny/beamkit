@@ -1,47 +1,54 @@
-import hub from './hub';
-import localHub from './local-hub';
-import test from 'ava';
-import sinon from 'sinon';
+const hub = require('./hub');
+const localHub = require('./local-hub');
+const sinon = require('sinon');
 
-test.before(() => {
-  sinon.spy(hub, 'addEventListener');
-  sinon.spy(hub, 'dispatchEvent');
-});
+describe('localHub', () => {
+  beforeAll(() => {
+    sinon.spy(hub, 'addEventListener');
+    sinon.spy(hub, 'dispatchEvent');
+  });
 
-test.afterEach(() => {
-  hub.clearEventListeners();
-});
+  afterEach(() => {
+    hub.clearEventListeners();
+  });
 
-test('create a local hub', t => {
-  const h = localHub();
-  t.is(typeof h.dispatchEvent, 'function');
-  t.is(typeof h.addEventListener, 'function');
-  t.is(typeof h.destroy, 'function');
-  t.true(hub.addEventListener.calledWithExactly('module-destroy', h.destroy));
-});
+  test('create a local hub', () => {
+    const h = localHub();
 
-test('works like a normal hub', t => {
-  const h = localHub();
-  const f = sinon.spy();
-  h.addEventListener('hello test', f);
-  h.dispatchEvent('hello test', 'now');
-  t.true(f.calledWithExactly('now'));
-});
+    expect(typeof h.dispatchEvent).toBe('function');
+    expect(typeof h.addEventListener).toBe('function');
+    expect(typeof h.destroy).toBe('function');
+    expect(hub.addEventListener.calledWithExactly('module-destroy', h.destroy))
+      .toBe(true);
+  });
 
-test('dispatch on global hub', t => {
-  const f = sinon.spy();
-  hub.addEventListener('call me', f);
+  test('works like a normal hub', () => {
+    const h = localHub();
+    const f = sinon.spy();
+    h.addEventListener('hello test', f);
+    h.dispatchEvent('hello test', 'now');
 
-  const h = localHub();
-  h.dispatchEvent('call me', 'now');
-  t.true(f.calledWithExactly('now'));
-});
+    expect(f.calledWithExactly('now')).toBe(true);
+  });
 
-test('destroy hub', t => {
-  const f = sinon.spy();
-  const h = localHub();
-  h.addEventListener('hello test', f);
-  h.destroy();
-  hub.dispatchEvent('hello test', 'now');
-  t.false(f.called);
+  test('dispatch on global hub', () => {
+    const f = sinon.spy();
+    hub.addEventListener('call me', f);
+
+    const h = localHub();
+    h.dispatchEvent('call me', 'now');
+
+    expect(f.calledWithExactly('now')).toBe(true);
+  });
+
+  test('destroy hub', () => {
+    const f = sinon.spy();
+    const h = localHub();
+    h.addEventListener('hello test', f);
+    h.destroy();
+    hub.dispatchEvent('hello test', 'now');
+
+    expect(f.called).toBe(false);
+  });
+
 });
