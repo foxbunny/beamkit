@@ -209,19 +209,115 @@
 	  return localHub;
 	};
 
+	const convertToQs = data => {
+	  const qs = [];
+	  for (const key in data) {
+	    if (data.hasOwnProperty(key))
+	      qs.push(`${key}=${encodeURIComponent(data[key])}`);
+	  }
+	  return qs.join('&');
+	};
+
+	const fromJSON = res => res.json();
+
+	const plugins = [];
+
+	const request = async (method, url, options, handlers) => {
+	  // Define the request parameters
+	  if (handlers === undefined) {
+	    handlers = options;
+	    options = {};
+	  }
+
+	  const data = options.data;
+	  const ignorePlugins = options.ignorePlugins || [];
+	  options = {
+	    method,
+	    headers: { ...options.headers },
+	  };
+	  handlers.convert = handlers.convert || fromJSON;
+
+	  if (data) {
+	    if (method === 'GET') {
+	      url += '?' + convertToQs(data);
+	    } else {
+	      options.body = JSON.stringify(data);
+	      options.headers = {
+	        'Content-Type': 'application/json',
+	      };
+	    }
+	  }
+
+	  // Create the request function
+	  let doRequest = (url, options) => fetch(url, options);
+
+	  // Apply plugins
+	  plugins.forEach(plugin => {
+	    if (ignorePlugins.indexOf(plugin.key) > -1) return;
+	    doRequest = plugin(doRequest);
+	  });
+
+	  try {
+	    const res = await doRequest(url, options);
+
+	    if (res.status === 204)
+	      (handlers.on204 || handlers.ok)(null, 204, res);
+
+	    else if (res.status === 200)
+	      (handlers.on200 || handlers.ok)(await handlers.convert(res), 200, res);
+
+	    else if (res.status >= 400)
+	      (handlers['on' + res.status] || handlers.err)(
+	        await handlers.convert(res),
+	        res.status,
+	        res
+	      );
+
+	    else
+	      (handlers['on' + res.status] || handlers.other || handlers.err)(
+	        null,
+	        res.status,
+	        res
+	      );
+	  }
+
+	  catch (e) {
+	    handlers.err(e, 0);
+	  }
+	};
+
+	var GET = request.bind(null, 'GET');
+	var POST = request.bind(null, 'POST');
+	var PUT = request.bind(null, 'PUT');
+	var DELETE = request.bind(null, 'DELETE');
+	var addPlugin = plugin => plugins.push(plugin);
+	var clearPlugins = () => plugins.length = 0;
+
+	var xhr = {
+		GET: GET,
+		POST: POST,
+		PUT: PUT,
+		DELETE: DELETE,
+		addPlugin: addPlugin,
+		clearPlugins: clearPlugins
+	};
+
 	var src = {
 	  h: h_1,
 	  hub: hub,
 	  localHub: localHub,
+	  xhr: xhr,
 	};
 	var src_1 = src.h;
 	var src_2 = src.hub;
 	var src_3 = src.localHub;
+	var src_4 = src.xhr;
 
 	exports.default = src;
 	exports.h = src_1;
 	exports.hub = src_2;
 	exports.localHub = src_3;
+	exports.xhr = src_4;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 
