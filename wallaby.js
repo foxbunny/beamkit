@@ -1,9 +1,10 @@
+const babelConfig = require('./babel.config');
+
 module.exports = function (wallaby) {
   return {
     files: [
       'package.json',
       'src/**/*.js',
-      'src/_test_setup.js',
       '!src/**/*.test.js',
     ],
     tests: [
@@ -14,14 +15,8 @@ module.exports = function (wallaby) {
       runner: 'node'
     },
     compilers: {
-      'src/**/*.test.js': wallaby.compilers.babel({
-        presets: ['@ava/babel-preset-stage-4']
-      })
+      'src/**/*.test.js': wallaby.compilers.babel(babelConfig),
     },
-    testFramework: 'ava',
-    debug: true,
-    setup() {
-      require('./src/_test_setup');
-    }
+    testFramework: 'jest',
   };
 };
