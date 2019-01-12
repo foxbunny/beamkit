@@ -1,4 +1,5 @@
 const hub = require('./hub');
+const utils = require('./utils');
 
 const my = module.exports = function (what, attrs, ...children) {
   if (typeof what === 'function') {
@@ -15,10 +16,6 @@ my.Fragment = (_, ...children) => {
 
 my.hFunc = (fn, attrs, ...children) => {
   return fn(attrs, children);
-};
-
-my.camelize = s => {
-  return s.replace(/-(\w)/g, (_, s) => s.toUpperCase())
 };
 
 my.hTag = (tag, attrs, ...children) => {
@@ -70,7 +67,7 @@ my.hTag = (tag, attrs, ...children) => {
       }
 
       else if (key.startsWith('data-')) {
-        key = my.camelize(key.slice(5));
+        key = utils.camelize(key.slice(5));
         el.data[key] = el.dataset[key] = val;
       }
 
