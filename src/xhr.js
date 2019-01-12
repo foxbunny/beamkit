@@ -1,4 +1,6 @@
-const convertToQs = data => {
+const my = module.exports;
+
+my.convertToQs = data => {
   const qs = [];
   for (const key in data) {
     if (data.hasOwnProperty(key))
@@ -7,11 +9,11 @@ const convertToQs = data => {
   return qs.join('&');
 };
 
-const fromJSON = res => res.json();
+my.fromJSON = res => res.json();
 
-const plugins = [];
+my.plugins = [];
 
-const request = async (method, url, options, handlers) => {
+my.request = async (method, url, options, handlers) => {
   // Define the request parameters
   if (handlers === undefined) {
     handlers = options;
@@ -24,11 +26,11 @@ const request = async (method, url, options, handlers) => {
     method,
     headers: { ...options.headers },
   };
-  handlers.convert = handlers.convert || fromJSON;
+  handlers.convert = handlers.convert || my.fromJSON;
 
   if (data) {
     if (method === 'GET') {
-      url += '?' + convertToQs(data);
+      url += '?' + my.convertToQs(data);
     } else {
       options.body = JSON.stringify(data);
       options.headers = {
@@ -41,7 +43,7 @@ const request = async (method, url, options, handlers) => {
   let doRequest = (url, options) => fetch(url, options);
 
   // Apply plugins
-  plugins.forEach(plugin => {
+  my.plugins.forEach(plugin => {
     if (ignorePlugins.indexOf(plugin.key) > -1) return;
     doRequest = plugin(doRequest);
   });
@@ -75,9 +77,9 @@ const request = async (method, url, options, handlers) => {
   }
 };
 
-exports.GET = request.bind(null, 'GET');
-exports.POST = request.bind(null, 'POST');
-exports.PUT = request.bind(null, 'PUT');
-exports.DELETE = request.bind(null, 'DELETE');
-exports.addPlugin = plugin => plugins.push(plugin);
-exports.clearPlugins = () => plugins.length = 0;
+my.GET = my.request.bind(null, 'GET');
+my.POST = my.request.bind(null, 'POST');
+my.PUT = my.request.bind(null, 'PUT');
+my.DELETE = my.request.bind(null, 'DELETE');
+my.addPlugin = plugin => my.plugins.push(plugin);
+my.clearPlugins = () => my.plugins.length = 0;

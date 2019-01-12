@@ -1,27 +1,27 @@
 const hub = require('./hub');
 
-const camelize = s => {
-  return s.replace(/-(\w)/g, (_, s) => s.toUpperCase())
-};
-
-const h = module.exports = function (what, attrs, ...children) {
+const my = module.exports = function (what, attrs, ...children) {
   if (typeof what === 'function') {
-    return hFunc(what, attrs, ...children);
+    return my.hFunc(what, attrs, ...children);
   }
-  return hTag(what, attrs, ...children);
+  return my.hTag(what, attrs, ...children);
 };
 
-h.Fragment = (_, ...children) => {
+my.Fragment = (_, ...children) => {
   const f = document.createDocumentFragment();
-  addChildren(f, children);
+  my.addChildren(f, children);
   return f;
 };
 
-const hFunc = (fn, attrs, ...children) => {
+my.hFunc = (fn, attrs, ...children) => {
   return fn(attrs, children);
 };
 
-const hTag = (tag, attrs, ...children) => {
+my.camelize = s => {
+  return s.replace(/-(\w)/g, (_, s) => s.toUpperCase())
+};
+
+my.hTag = (tag, attrs, ...children) => {
   const el = document.createElement(tag);
 
   // This is a custom version of `dataset` because `dataset` only allows string
@@ -29,7 +29,7 @@ const hTag = (tag, attrs, ...children) => {
   // populate this object.
   el.data = {};
 
-  addChildren(el, children);
+  my.addChildren(el, children);
 
   if (attrs) {
     for (let key in attrs) {
@@ -70,7 +70,7 @@ const hTag = (tag, attrs, ...children) => {
       }
 
       else if (key.startsWith('data-')) {
-        key = camelize(key.slice(5));
+        key = my.camelize(key.slice(5));
         el.data[key] = el.dataset[key] = val;
       }
 
@@ -117,16 +117,16 @@ const hTag = (tag, attrs, ...children) => {
   return el;
 };
 
-const isTextNode = child => typeof child !== 'object' && child != null;
+my.isTextNode = child => typeof child !== 'object' && child != null;
 
-const addChildren = (el, children) => {
+my.addChildren = (el, children) => {
   const l = children.length;
   let textContent = '';
 
   for (let i = 0; i < l; i++) {
     const child = children[i];
 
-    if (textContent && !isTextNode(child)) {
+    if (textContent && !my.isTextNode(child)) {
       // This child is not text, so flush the text content first before
       // processing the child
       el.appendChild(document.createTextNode(textContent));
@@ -137,9 +137,9 @@ const addChildren = (el, children) => {
       el.appendChild(child);
 
     else if (Array.isArray(child))
-      addChildren(el, child);
+      my.addChildren(el, child);
 
-    else if (isTextNode(child))
+    else if (my.isTextNode(child))
       // Accumulate text until the next non-text child. Always include a sinlge
       // space between them. Trimming takes care of cases where child is itself
       // consists of whitespace only.
