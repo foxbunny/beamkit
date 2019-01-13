@@ -22,6 +22,8 @@ A simple toolkit for developing front end applications the old-school way.
 - [Creating DOM nodes using JSX](./docs/h.md)
 - [Custom events](./docs/hub.md)
 - [Making XHR requests](./docs/xhr.md)
+- [Client-side routing](./docs/urlstate.md)
+- [Browser APIs](./docs/browser.md)
 
 ## Installation
 

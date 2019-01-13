@@ -3,4 +3,8 @@ module.exports = {
   hub: require('./hub'),
   localHub: require('./local-hub'),
   xhr: require('./xhr'),
+  urlstate: require('./urlstate'),
+  utils: require('./utils'),
+  browser: require('./browser'),
+  testing: require('./testing'),
 };
