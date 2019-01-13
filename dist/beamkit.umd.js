@@ -36,29 +36,51 @@
 	  },
 	};
 
-	var h_1 = createCommonjsModule(function (module) {
-	const camelize = s => {
-	  return s.replace(/-(\w)/g, (_, s) => s.toUpperCase())
+	var utils = createCommonjsModule(function (module, exports) {
+	const my = exports;
+
+	my.camelize = s => {
+	  return s.toLowerCase().replace(/-([a-z])/ig, (_, s) => s.toUpperCase())
 	};
 
-	const h = module.exports = function (what, attrs, ...children) {
-	  if (typeof what === 'function') {
-	    return hFunc(what, attrs, ...children);
+	my.decamelize = s => {
+	  return s.replace(/([A-Z])/g, (_s, c) => `-${c.toLowerCase()}`);
+	};
+
+	my.merge = (target, source) => {
+	  for (let key in source) {
+	    if (!source.hasOwnProperty(key)) continue;
+	    const val = source[key];
+	    if (val === undefined) {
+	      if (target.hasOwnProperty(key))
+	        delete target[key];
+	    }
+	    else {
+	      target[key] = val;
+	    }
 	  }
-	  return hTag(what, attrs, ...children);
+	};
+	});
+
+	var h = createCommonjsModule(function (module) {
+	const my = module.exports = function (what, attrs, ...children) {
+	  if (typeof what === 'function') {
+	    return my.hFunc(what, attrs, ...children);
+	  }
+	  return my.hTag(what, attrs, ...children);
 	};
 
-	h.Fragment = (_, ...children) => {
+	my.Fragment = (_, ...children) => {
 	  const f = document.createDocumentFragment();
-	  addChildren(f, children);
+	  my.addChildren(f, children);
 	  return f;
 	};
 
-	const hFunc = (fn, attrs, ...children) => {
+	my.hFunc = (fn, attrs, ...children) => {
 	  return fn(attrs, children);
 	};
 
-	const hTag = (tag, attrs, ...children) => {
+	my.hTag = (tag, attrs, ...children) => {
 	  const el = document.createElement(tag);
 
 	  // This is a custom version of `dataset` because `dataset` only allows string
@@ -66,7 +88,7 @@
 	  // populate this object.
 	  el.data = {};
 
-	  addChildren(el, children);
+	  my.addChildren(el, children);
 
 	  if (attrs) {
 	    for (let key in attrs) {
@@ -107,7 +129,7 @@
 	      }
 
 	      else if (key.startsWith('data-')) {
-	        key = camelize(key.slice(5));
+	        key = utils.camelize(key.slice(5));
 	        el.data[key] = el.dataset[key] = val;
 	      }
 
@@ -154,16 +176,16 @@
 	  return el;
 	};
 
-	const isTextNode = child => typeof child !== 'object' && child != null;
+	my.isTextNode = child => typeof child !== 'object' && child != null;
 
-	const addChildren = (el, children) => {
+	my.addChildren = (el, children) => {
 	  const l = children.length;
 	  let textContent = '';
 
 	  for (let i = 0; i < l; i++) {
 	    const child = children[i];
 
-	    if (textContent && !isTextNode(child)) {
+	    if (textContent && !my.isTextNode(child)) {
 	      // This child is not text, so flush the text content first before
 	      // processing the child
 	      el.appendChild(document.createTextNode(textContent));
@@ -174,9 +196,9 @@
 	      el.appendChild(child);
 
 	    else if (Array.isArray(child))
-	      addChildren(el, child);
+	      my.addChildren(el, child);
 
-	    else if (isTextNode(child))
+	    else if (my.isTextNode(child))
 	      // Accumulate text until the next non-text child. Always include a sinlge
 	      // space between them. Trimming takes care of cases where child is itself
 	      // consists of whitespace only.
@@ -209,7 +231,10 @@
 	  return localHub;
 	};
 
-	const convertToQs = data => {
+	var xhr = createCommonjsModule(function (module) {
+	const my = module.exports;
+
+	my.convertToQs = data => {
 	  const qs = [];
 	  for (const key in data) {
 	    if (data.hasOwnProperty(key))
@@ -218,11 +243,11 @@
 	  return qs.join('&');
 	};
 
-	const fromJSON = res => res.json();
+	my.fromJSON = res => res.json();
 
-	const plugins = [];
+	my.plugins = [];
 
-	const request = async (method, url, options, handlers) => {
+	my.request = async (method, url, options, handlers) => {
 	  // Define the request parameters
 	  if (handlers === undefined) {
 	    handlers = options;
@@ -235,11 +260,11 @@
 	    method,
 	    headers: { ...options.headers },
 	  };
-	  handlers.convert = handlers.convert || fromJSON;
+	  handlers.convert = handlers.convert || my.fromJSON;
 
 	  if (data) {
 	    if (method === 'GET') {
-	      url += '?' + convertToQs(data);
+	      url += '?' + my.convertToQs(data);
 	    } else {
 	      options.body = JSON.stringify(data);
 	      options.headers = {
@@ -252,7 +277,7 @@
 	  let doRequest = (url, options) => fetch(url, options);
 
 	  // Apply plugins
-	  plugins.forEach(plugin => {
+	  my.plugins.forEach(plugin => {
 	    if (ignorePlugins.indexOf(plugin.key) > -1) return;
 	    doRequest = plugin(doRequest);
 	  });
@@ -286,38 +311,187 @@
 	  }
 	};
 
-	var GET = request.bind(null, 'GET');
-	var POST = request.bind(null, 'POST');
-	var PUT = request.bind(null, 'PUT');
-	var DELETE = request.bind(null, 'DELETE');
-	var addPlugin = plugin => plugins.push(plugin);
-	var clearPlugins = () => plugins.length = 0;
+	my.GET = my.request.bind(null, 'GET');
+	my.POST = my.request.bind(null, 'POST');
+	my.PUT = my.request.bind(null, 'PUT');
+	my.DELETE = my.request.bind(null, 'DELETE');
+	my.addPlugin = plugin => my.plugins.push(plugin);
+	my.clearPlugins = () => my.plugins.length = 0;
+	});
 
-	var xhr = {
-		GET: GET,
-		POST: POST,
-		PUT: PUT,
-		DELETE: DELETE,
-		addPlugin: addPlugin,
-		clearPlugins: clearPlugins
+	var browser = createCommonjsModule(function (module) {
+	const my = module.exports;
+
+	my.location = window.location;
+	my.history = window.history;
+	my.localStorage = window.localStorage;
+	});
+
+	var urlstate = createCommonjsModule(function (module, exports) {
+	const my = exports;
+
+	my.coerce = val => {
+	  if (val === '')
+	    return true;
+
+	  else if (/^\d+(\.\d+)?$/.test(val))
+	    return parseFloat(val);
+
+	  else if (val === 'true' || val === 'false')
+	    return val === 'true';
+
+	  else if (val === 'null')
+	    return null;
+
+	  else
+	    return val;
 	};
 
+	my.urlEncode = params => {
+	  const keys = Object.keys(params);
+
+	  if (keys.length === 0) return '';
+
+	  keys.sort(); // make key order predictable
+
+	  const pairs = [];
+
+	  keys.forEach(key => {
+	    const val = params[key];
+	    key = utils.decamelize(key);
+
+	    if (val === undefined) return;
+
+	    pairs.push(`${key}=${encodeURIComponent(val)}`);
+	  });
+
+	  return pairs.join('&');
+	};
+
+	my.urlDecode = qs => {
+	  const params = {};
+
+	  if (qs.length === 0)
+	    return params;
+
+	  const pairs = qs.split('&');
+
+	  pairs.forEach(pair => {
+	    let [key, val = ''] = pair.split('=');
+
+	    val = my.coerce(decodeURIComponent(val));
+
+	    params[utils.camelize(key)] = val;
+	  });
+
+	  return params;
+	};
+
+	my.toUrl = ({ path, query, hash }) => {
+	  let url = '';
+
+	  if (path.length === 0) url += '/';
+
+	  else {
+	    path.forEach(segment => {
+	      url += '/' + encodeURIComponent(utils.decamelize('' + segment));
+	    });
+	  }
+
+	  query = my.urlEncode(query);
+	  if (query)
+	    url += '?' + query;
+
+	  hash = my.urlEncode(hash);
+	  if (hash)
+	    url += '#' + hash;
+
+	  return url;
+	};
+
+	my.getState = () => {
+	  let { pathname, search, hash } = browser.location;
+	  const locationObject = {};
+
+	  if (pathname === '/') locationObject.path = [];
+
+	  else {
+	    locationObject.path = pathname.slice(1).replace(/\/\/+/g, '/').split('/');
+	    locationObject.path.forEach((segment, i) => {
+	      locationObject.path[i] = my.coerce(utils.camelize(decodeURIComponent(segment)));
+	    });
+	  }
+
+	  locationObject.query = my.urlDecode(search.slice(1));
+	  locationObject.hash = my.urlDecode(hash.slice(1));
+
+	  return locationObject;
+	};
+
+	my.swapState = ({ path = [], query = {}, hash = {} }) => {
+	  const locationObject = { path, query, hash };
+	  browser.history.pushState(null, '', my.toUrl(locationObject));
+	  hub.dispatchEvent('location-change', locationObject);
+	};
+
+	my.updateState = callback => {
+	  const locationObject = my.getState();
+	  callback(locationObject);
+	  my.swapState(locationObject);
+	};
+
+	my.patchLocation = partialLocation => locationObject => {
+	  if (partialLocation.path)
+	    locationObject.path = partialLocation.path;
+
+	  if (partialLocation.query)
+	    utils.merge(locationObject.query, partialLocation.query);
+
+	  if (partialLocation.hash)
+	    utils.merge(locationObject.hash, partialLocation.hash);
+	};
+
+	my.changeState = partialLocation => {
+	  my.updateState(my.patchLocation(partialLocation));
+	};
+
+	my.updateUrl = partialLocation => {
+	  const locationObject = my.getState();
+	  const updater = my.patchLocation(partialLocation);
+	  updater(locationObject);
+	  return my.toUrl(locationObject);
+	};
+
+	window.addEventListener('popstate', () => {
+	  hub.dispatchEvent('location-change', my.getState());
+	});
+	});
+
 	var src = {
-	  h: h_1,
+	  h: h,
 	  hub: hub,
 	  localHub: localHub,
 	  xhr: xhr,
+	  urlstate: urlstate,
+	  utils: utils,
+	  browser: browser,
 	};
 	var src_1 = src.h;
 	var src_2 = src.hub;
 	var src_3 = src.localHub;
 	var src_4 = src.xhr;
+	var src_5 = src.urlstate;
+	var src_6 = src.utils;
+	var src_7 = src.browser;
 
 	exports.default = src;
 	exports.h = src_1;
 	exports.hub = src_2;
 	exports.localHub = src_3;
 	exports.xhr = src_4;
+	exports.urlstate = src_5;
+	exports.utils = src_6;
+	exports.browser = src_7;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 
