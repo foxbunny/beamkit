@@ -6,5 +6,4 @@ module.exports = {
   urlstate: require('./urlstate'),
   utils: require('./utils'),
   browser: require('./browser'),
-  testing: require('./testing'),
 };
