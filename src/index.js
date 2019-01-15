@@ -6,4 +6,5 @@ module.exports = {
   urlstate: require('./urlstate'),
   utils: require('./utils'),
   browser: require('./browser'),
+  keyedList: require('./keyed-list'),
 };

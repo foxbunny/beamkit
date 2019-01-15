@@ -22,6 +22,7 @@ final form. See the [issue tracker](bit.ly/beamkit-issues) for roadmaps.
 - Component-less event-driven architecture with a simple pub-sub system.
 - XHR requests with middleware-style plugins.
 - URL-to-state (de)serialization for flexible routing.
+- Efficient DOM diffing for keyed node lists.
 
 ## Features 
 
@@ -38,6 +39,7 @@ final form. See the [issue tracker](bit.ly/beamkit-issues) for roadmaps.
 ## Documentation
 
 - [Creating DOM nodes using JSX](./docs/h.md)
+- [Efficiently updating lists of DOM nodes](./keyed-list.md)
 - [Custom events](./docs/hub.md)
 - [Making XHR requests](./docs/xhr.md)
 - [Client-side routing](./docs/urlstate.md)
