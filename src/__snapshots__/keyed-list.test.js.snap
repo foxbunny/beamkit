@@ -1,0 +1,87 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`keyedList update append 1`] = `
+"<ul>
+    <li>A</li>
+    <li>B</li>
+    <li>C</li>
+    <li>D</li>
+    <li>E</li>
+    <li>F</li>
+</ul>"
+`;
+
+exports[`keyedList update complete swap 1`] = `
+"<ul>
+    <li>F</li>
+    <li>G</li>
+    <li>H</li>
+    <li>I</li>
+    <li>J</li>
+</ul>"
+`;
+
+exports[`keyedList update completely empty old 1`] = `
+"<ul>
+    <li>A</li>
+    <li>B</li>
+    <li>C</li>
+    <li>D</li>
+    <li>E</li>
+</ul>"
+`;
+
+exports[`keyedList update completely empty target 1`] = `"<ul></ul>"`;
+
+exports[`keyedList update identical lists 1`] = `
+"<ul>
+    <li>A</li>
+    <li>B</li>
+    <li>C</li>
+    <li>D</li>
+    <li>E</li>
+</ul>"
+`;
+
+exports[`keyedList update middle subset 1`] = `
+"<ul>
+    <li>B</li>
+    <li>C</li>
+    <li>D</li>
+</ul>"
+`;
+
+exports[`keyedList update remove initial 1`] = `
+"<ul>
+    <li>B</li>
+    <li>C</li>
+    <li>D</li>
+    <li>E</li>
+</ul>"
+`;
+
+exports[`keyedList update remove initial and from middle 1`] = `
+"<ul>
+    <li>B</li>
+    <li>C</li>
+    <li>E</li>
+</ul>"
+`;
+
+exports[`keyedList update single item overlap 1`] = `
+"<ul>
+    <li>C</li>
+    <li>D</li>
+    <li>E</li>
+</ul>"
+`;
+
+exports[`keyedList update swap middle 1`] = `
+"<ul>
+    <li>A</li>
+    <li>B</li>
+    <li>D</li>
+    <li>C</li>
+    <li>E</li>
+</ul>"
+`;
