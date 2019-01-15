@@ -9,6 +9,7 @@
     "test": "jest",
     "test:live": "jest --watch",
     "dist": "rollup -c",
+    "loc": "cloc --exclude-ext=test.js src",
     "preversion": "npm test",
     "version": "npm run dist && git add dist",
     "postversion": "git push && git push --tags"
